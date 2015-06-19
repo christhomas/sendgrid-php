@@ -131,6 +131,17 @@ class SendGrid
 
         return $response;
     }
+    
+    public function getRequest($endpoint)
+    {
+    	$req = $this->client->get($endpoint);
+    	
+    	$res = $req->send();
+    	
+    	$response = new SendGrid\Response($res->getStatusCode(), $res->getHeaders(), $res->getBody(true), $res->json());
+    	
+    	return $response;
+    }
 
     public static function register_autoloader()
     {
