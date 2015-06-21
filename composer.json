@@ -1,5 +1,5 @@
 {
-  "name": "amstudios/sendgrid",
+  "name": "amstudios/sendgrid-php",
   "description": "This library allows you to quickly and easily send emails through SendGrid using PHP.",
   "version": "3.2.0",
   "homepage": "http://github.com/sendgrid/sendgrid-php",
@@ -16,7 +16,7 @@
     "vlucas/phpdotenv": "~1.0"
   },
   "replace": {
-    "sendgrid/sendgrid-php": "*"
+    "amstudios/sendgrid-php": "*"
   },
   "type": "library",
   "autoload": {
