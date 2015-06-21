@@ -7,3 +7,4 @@ vendor
 sendgrid-php.php
 /.buildpath
 /.project
+/.settings/
