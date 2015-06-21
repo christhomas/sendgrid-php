@@ -31,7 +31,7 @@ class SendGrid
 	 */
 	protected $guzzle;
 
-	protected function getOptionList(&$option)
+	protected function &getOptionList(&$option)
 	{
 		$list = array(
 			"verify_ssl",
@@ -39,7 +39,9 @@ class SendGrid
 			"proxy"
 		);
 
-		if(!in_array($option,$list)) return &$this->options;
+		if(!in_array($option,$list)){
+			return $this->options;
+		}
 
 		$map = array(
 				"verify_ssl"		=> "verify",
@@ -51,7 +53,7 @@ class SendGrid
 			$option = $map[$option];
 		}
 
-		return &$this->guzzle;
+		return $this->guzzle;
 	}
 
    	public function setAPIKey($key)
@@ -85,7 +87,7 @@ class SendGrid
    			throw new InvalidArgumentException("key has to be a string",$option);
    		}
 
-   		$data = $this->getOptionList($option);
+   		$data = &$this->getOptionList($option);
    		$data[$option] = $value;
    	}
 
