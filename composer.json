@@ -11,9 +11,6 @@
     "phpunit/phpunit": "~4.4",
     "vlucas/phpdotenv": "~1.0"
   },
-  "replace": {
-    "sendgrid/sendgrid-php": "*"
-  },
   "minimum-stability": "dev",
   "type": "library",
   "autoload": {
