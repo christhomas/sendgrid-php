@@ -31,7 +31,7 @@ class SendGrid
 	 */
 	protected $guzzle;
 
-	protected function getOptionList(&$option);
+	protected function getOptionList(&$option)
 	{
 		$list = array(
 			"verify_ssl",
