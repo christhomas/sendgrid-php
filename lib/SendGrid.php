@@ -60,9 +60,8 @@ class SendGrid
    	{
    		$this->apiKey = $key;
 
-   		$guzzleOption['request.options']['headers'] = array('Authorization' => 'Bearer ' . $this->apiKey);
-
    		//	calculate the authorization header based on this key
+   		$this->setHeader("Authorization","Bearer $key");
    	}
 
    	public function setLogin($username,$password)
@@ -71,20 +70,32 @@ class SendGrid
    		$this->apiPass	= $password;
 
    		//	calculate the authorization header based on this key
+   		$this->setHeader("Authorization","Basic ".base64_encode("$username:$password"));
+   	}
+
+   	public function setHeader($key,$value)
+   	{
+   		if(!array_key_exists("headers",$this->guzzle)){
+   			$this->guzzle["headers"] = array();
+   		}
+
+   		$this->guzzle["headers"][$key] = $value;
    	}
 
    	public function setOption($option,$value=null)
    	{
    		if($value === null){
-   			if(!is_array($options)) $options = array();
+   			if(!is_array($option)) $option = array();
 
-   			foreach($options as $k=>$v){
+   			foreach($option as $k=>$v){
    				$this->setOption($k,$v);
    			}
+
+   			return;
    		}
 
-   		if(!is_string($option || !strlen($option)){
-   			throw new InvalidArgumentException("key has to be a string",$option);
+   		if(!is_string($option) || !strlen($option)){
+   			throw new SendGrid\Exception_Invalid_Parameter("key has to be a string",$option);
    		}
 
    		$data = &$this->getOptionList($option);
@@ -105,13 +116,13 @@ class SendGrid
    			return array_key_exists($option,$data);
    		}
 
-   		throw new InvalidArgumentException("option requested was not valid, neither string nor array",$option);
+   		throw new SendGrid\Exception_Invalid_Parameter("option requested was not valid, neither string nor array",$option);
    	}
 
    	public function getOption($option,$default=null)
    	{
    		if(!is_string($option)){
-   			throw new InvalidArgumentException("option requested was not valid, required to be a string",$option);
+   			throw new SendGrid\Exception_Invalid_Parameter("option requested was not valid, required to be a string",$option);
    		}
 
    		$data = $this->getOptionList($option);
@@ -156,6 +167,8 @@ class SendGrid
 
     public function __construct($options=array())
     {
+    	self::register_autoloader();
+
     	$this->options = array();
 
     	//	Set some defaults before you import all the options
@@ -179,7 +192,7 @@ class SendGrid
         	array('request.options' => $this->guzzle)
         );
 
-        $client->setUserAgent('sendgrid/' . $this->version . ';php');
+        $this->client->setUserAgent("sendgrid/{$this->version};php");
     }
 
     /**
@@ -193,7 +206,7 @@ class SendGrid
     /**
      * Makes a post request to SendGrid to send an email
      * @param SendGrid\Email $email Email object built
-     * @throws SendGrid\Exception if the response code is not 200
+     * @throws SendGrid\Exception_Invalid_Response if the response code is not 200
      * @return stdClass SendGrid response object
      */
     public function send(SendGrid\Email $email)
@@ -209,7 +222,7 @@ class SendGrid
         $response = $this->postRequest($this->endpoint, $form);
 
         if ($response->code != 200 && $this->options['exceptions']) {
-            throw new SendGrid\Exception($response->raw_body, $response->code);
+            throw new SendGrid\Exception_Invalid_Response($response->raw_body, $response->code);
         }
 
         return $response;
@@ -234,15 +247,7 @@ class SendGrid
 
     public function getRequest($endpoint)
     {
-    	// Using username password
-    	if ($this->apiUser !== null) {
-    		$auth['api_user'] = $this->apiUser;
-    		$auth['api_key']  = $this->apiKey;
-    	}else{
-    		$auth = null;
-    	}
-
-    	$req = $this->client->get($endpoint,$auth);
+    	$req = $this->client->get($endpoint);
 
     	$res = $req->send();
 
@@ -253,18 +258,21 @@ class SendGrid
 
     public static function register_autoloader()
     {
-        spl_autoload_register(array('SendGrid', 'autoloader'));
+    	static $run_once = false;
+
+    	if($run_once) return;
+
+   	    spl_autoload_register(array('SendGrid', 'autoloader'));
+        $run_once = true;
     }
 
     public static function autoloader($class)
     {
         // Check that the class starts with 'SendGrid'
         if ($class == 'SendGrid' || stripos($class, 'SendGrid\\') === 0) {
-            $file = str_replace('\\', '/', $class);
+            $file = __DIR__."/".str_replace('\\', '/', $class).".php";
 
-            if (file_exists(dirname(__FILE__) . '/' . $file . '.php')) {
-                require_once(dirname(__FILE__) . '/' . $file . '.php');
-            }
+            if(file_exists($file)) require_once($file);
         }
     }
 }
