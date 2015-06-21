@@ -6,12 +6,6 @@
     "sendgrid/smtpapi": "~0.5",
     "guzzle/guzzle": "~3.9"
   },
-  "require-dev": {
-    "mockery/mockery": "~0.9",
-    "phpunit/phpunit": "~4.4",
-    "vlucas/phpdotenv": "~1.0"
-  },
-  "minimum-stability": "dev",
   "type": "library",
   "autoload": {
     "psr-0": {"SendGrid": "lib/"}
