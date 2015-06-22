@@ -66,7 +66,7 @@ class Template
 		$template = $this->sendgrid->postRequest($url,json_encode($data));
 		$template = $template->body;
 
-		return $template["template_id"];
+		return array($template["id"],$template["template_id"]);
     }
 
     public function delete($id_template)
