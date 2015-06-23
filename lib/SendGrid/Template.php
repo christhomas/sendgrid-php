@@ -61,15 +61,15 @@ class Template
 		);
 
 		if(strpos($data["subject"],"<%subject%>") === false){
-			$data["subject"] = "$subject<%subject%>";
+			$data["subject"] .= "<%subject%>";
 		}
 
 		if(strpos($data["html_content"],"<%body%>") === false){
-			$data["html_content"] = "$html<%body%>";
+			$data["html_content"] .= "<%body%>";
 		}
 
 		if(strpos($data["plain_content"],"<%body%>") === false){
-			$data["plain_content"] = "$text<%body%>";
+			$data["plain_content"] .= "<%body%>";
 		}
 
 		$url = $this->url["edit"];
@@ -77,6 +77,10 @@ class Template
 
 		$template = $this->sendgrid->postRequest($url,json_encode($data));
 		$template = $template->body;
+
+		if(array_key_exists("error",$template)){
+			throw new Exception("Sendgrid error: {$template["error"]}");
+		}
 
 		return array($template["id"],$template["template_id"]);
     }
