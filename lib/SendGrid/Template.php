@@ -36,7 +36,7 @@ class Template
     	$url = str_replace("(:template_id)",$id_template,$url);
 
     	$template = $this->sendgrid->getRequest($url);
-
+    	
     	return $template->body;
     }
 
@@ -68,6 +68,7 @@ class Template
 			"plain_content"	=> ""
 		);
 
+		/**
 		if(strpos($data["subject"],"<%subject%>") === false){
 			$data["subject"] .= "<%subject%>";
 		}
@@ -78,7 +79,7 @@ class Template
 
 		if(strpos($data["plain_content"],"<%body%>") === false){
 			$data["plain_content"] .= "<%body%>";
-		}
+		}*/
 		
 		$url = $this->url["edit_ver"];
 		$url = str_replace("(:template_id)",$id_template,$url);

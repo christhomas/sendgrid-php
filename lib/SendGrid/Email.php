@@ -278,6 +278,7 @@ class Email
 
     public function setSubject($subject)
     {
+    	print(__METHOD__.\Amslib_Debug::vdump($subject));
         $this->subject = $subject;
         return $this;
     }

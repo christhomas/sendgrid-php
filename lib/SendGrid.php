@@ -237,7 +237,7 @@ class SendGrid
     public function postRequest($endpoint, $form)
     {
         $req = $this->client->post($endpoint, null, $form);
-        print("request = ".Amslib_Debug::vdump($req));
+        //print("request = ".Amslib_Debug::vdump($req));
 
         $res = $req->send();
 
