@@ -54,11 +54,23 @@ class Template
     {
 		$data = array(
 			"name"			=> $name,
-			"subject"		=> "<%subject%>$subject",
+			"subject"		=> $subject,
 			"active"		=> intval($active),
 			"html_content"	=> $html,
-			"plain_content"	=> "<%body%>"
+			"plain_content"	=> ""
 		);
+
+		if(strpos($data["subject"],"<%subject%>") === false){
+			$data["subject"] = "$subject<%subject%>";
+		}
+
+		if(strpos($data["html_content"],"<%body%>") === false){
+			$data["html_content"] = "$html<%body%>";
+		}
+
+		if(strpos($data["plain_content"],"<%body%>") === false){
+			$data["plain_content"] = "$text<%body%>";
+		}
 
 		$url = $this->url["edit"];
 		$url = str_replace("(:template_id)",$id_template,$url);
