@@ -255,6 +255,18 @@ class SendGrid
 
     	return $response;
     }
+    
+    public function patchRequest($endpoint,$form)
+    {
+    	$req = $this->client->patch($endpoint,null,$form);
+    
+    	$res = $req->send();
+    
+    	$response = new SendGrid\Response($res->getStatusCode(), $res->getHeaders(), $res->getBody(true), $res->json());
+    
+    	return $response;
+    }
+    
 
     public static function register_autoloader()
     {

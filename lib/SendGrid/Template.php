@@ -9,7 +9,8 @@ class Template
 		"list"		=> "https://api.sendgrid.com/v3/templates",
 		"get"		=> "https://api.sendgrid.com/v3/templates/(:template_id)",
 		"create"	=> "https://api.sendgrid.com/v3/templates",
-		"edit"		=> "https://api.sendgrid.com/v3/templates/(:template_id)/versions"
+		"edit_tpl"	=> "https://api.sendgrid.com/v3/templates/(:template_id)",
+		"edit_ver"	=> "https://api.sendgrid.com/v3/templates/(:template_id)/versions"
 	);
 
     public function __construct($sendgrid)
@@ -50,10 +51,17 @@ class Template
     	return $template["id"];
     }
 
-    public function editById($id_template,$name,$subject,$active,$html)
+    public function editById($id_template,$name,$version,$subject,$active,$html)
     {
+    	$url = $this->url["edit_tpl"];
+    	$url = str_replace("(:template_id)",$id_template,$url);
+    	 
+    	//	Update the template name to the name of the latest version
+    	$response = $this->sendgrid->patchRequest($url,json_encode(array("name"=>$name)));
+    	
+    	//	Build the final array to update the template
 		$data = array(
-			"name"			=> $name,
+			"name"			=> $version,
 			"subject"		=> $subject,
 			"active"		=> intval($active),
 			"html_content"	=> $html,
@@ -71,8 +79,8 @@ class Template
 		if(strpos($data["plain_content"],"<%body%>") === false){
 			$data["plain_content"] .= "<%body%>";
 		}
-
-		$url = $this->url["edit"];
+		
+		$url = $this->url["edit_ver"];
 		$url = str_replace("(:template_id)",$id_template,$url);
 
 		$template = $this->sendgrid->postRequest($url,json_encode($data));
