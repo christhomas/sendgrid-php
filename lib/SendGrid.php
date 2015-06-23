@@ -218,6 +218,8 @@ class SendGrid
             $form['api_user'] = $this->apiUser;
             $form['api_key']  = $this->apiKey;
         }
+        
+        $this->endpoint = "https://api.sendgrid.com/api/mail.send.json";
 
         $response = $this->postRequest($this->endpoint, $form);
 
