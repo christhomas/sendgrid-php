@@ -214,10 +214,8 @@ class SendGrid
         $form = $email->toWebFormat();
 
         // Using username password
-        if ($this->apiUser !== null) {
-            $form['api_user'] = $this->apiUser;
-            $form['api_key']  = $this->apiKey;
-        }
+		$form['api_user'] = $this->apiUser;
+		$form['api_key']  = $this->apiPass;
         
         $this->endpoint = "https://api.sendgrid.com/api/mail.send.json";
 
@@ -239,6 +237,7 @@ class SendGrid
     public function postRequest($endpoint, $form)
     {
         $req = $this->client->post($endpoint, null, $form);
+        print("request = ".Amslib_Debug::vdump($req));
 
         $res = $req->send();
 
