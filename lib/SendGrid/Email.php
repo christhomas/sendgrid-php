@@ -112,9 +112,12 @@ class Email
         return $this->toName;
     }
 
-    public function setFrom($email)
+    public function setFrom($email,$name=null)
     {
         $this->from = $email;
+        
+        if($name) $this->fromName = $name;
+        
         return $this;
     }
 
